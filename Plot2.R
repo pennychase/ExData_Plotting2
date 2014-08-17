@@ -18,4 +18,14 @@ totalEmissionsBaltimore <- data.frame(Year=as.Date(names(be), "%Y"), Emissions=a
 with(totalEmissionsBaltimore, plot(Year, Emissions, type="l", pch=20, ylab="Emissions"))
 
 
+###
+### Using ggplot 
+###
+library(ggplot2)
+
+# Create the basic plot of year and Emissions
+b <- ggplot(baltimore, aes(year, Emissions))
+# Use stat_summary() to plot the summary of the y values (i.e., the Emissions)
+# Plot the points as well as the lines to make clear which years we have data
+b + stat_summary(fun.y = "sum", geom = "line")
 
