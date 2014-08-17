@@ -12,4 +12,5 @@ te <- tapply(NEI$Emissions, NEI$year, sum)
 totalEmissions <- data.frame(Year=as.Date(names(te), "%Y"), Emissions=as.vector(te))
 
 # Plot as a time series: type="o" draws lines and overplotted points
-with(totalEmissions, plot(Year, Emissions, type="o", pch=20))
+# Scale Emissions to thousands of tons by dividing by 1000 to make the y-axis values easier to read
+with(totalEmissions, plot(Year, Emissions/1000, type="o", pch=20, ylab="Emissions (1000s of tons)"))
