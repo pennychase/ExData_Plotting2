@@ -15,7 +15,8 @@ be <- tapply(baltimore$Emissions, baltimore$year, sum)
 totalEmissionsBaltimore <- data.frame(Year=as.Date(names(be), "%Y"), Emissions=as.vector(be))
 
 # Plot as a time series: type="l" draws lines
-with(totalEmissionsBaltimore, plot(Year, Emissions, type="l", ylab="Emissions"))
+with(totalEmissionsBaltimore, plot(Year, Emissions, type="l", xlab="Year", ylab="Emissions (tons)", 
+                                   main="Total Emissions from All Sources for Baltimore, 1999-2008"))
 
 
 ###

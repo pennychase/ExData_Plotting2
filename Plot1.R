@@ -22,7 +22,8 @@ te <- tapply(NEI$Emissions, NEI$year, sum)
 totalEmissions <- data.frame(Year=as.Date(names(te), "%Y"), Emissions=as.vector(te))
 
 # Plot as a time series: type="l" draws lines
-with(totalEmissions, plot(Year, Emissions, type="l", ylab="Emissions"))
+with(totalEmissions, plot(Year, Emissions, type="l", xlab="Year",
+                          ylab="Emissions (tons)", main="Total Emissions from All Sources, 1999-2008"))
 
 
 

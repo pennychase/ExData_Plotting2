@@ -19,6 +19,11 @@ coalEmissions <- NEI[NEI$SCC %in% coalSCC,]
 # Create the mapping to aesthetics (emissions by year)
 coal <- ggplot(coalEmissions, aes(year, Emissions))
 # Use stat_summary() to plot the summary of the y values (i.e., the emissions)
-coal + stat_summary(fun.y = "sum", geom = "line") 
+coal <- coal + stat_summary(fun.y = "sum", geom = "line") 
+# Add labels
+coal <- coal + labs(title="Emissions from Coal Sources, 1999-2008", x="Year", y="Emissions (tons)")
+
+# Plot graph
+coal
 
 
