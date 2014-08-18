@@ -1,0 +1,5 @@
+# Exclude the data directory
+exdata-data-NEI_data
+
+# Exclude the generated plots
+*.png
