@@ -1,3 +1,13 @@
+## R Code to construct a plot to answer Question 1: 
+## Have total emissions from PM2.5 decreased in the United States from 1999 to 2008? 
+##
+## This script reads in the the National Emissions Inventory (NEI) data for 1999, 2002, 2005, and 2008.
+## It computes the total emissions by year, and uses the base plotting system to plot a time series
+## graph of the total emissions by year.
+##
+## From the graph we can see that total emissions declined from over 7,000,000 tons in 1999 to
+## below 3,500,000 tons in 2008.
+
 # Set working diectory
 setwd("~/Documents/MOOCs/Data Science Specialization/Course4_Exploratory-Data-Analysis/Projects/ExData_Plotting2")
 
@@ -14,8 +24,11 @@ totalEmissions <- data.frame(Year=as.Date(names(te), "%Y"), Emissions=as.vector(
 # Plot as a time series: type="l" draws lines
 with(totalEmissions, plot(Year, Emissions, type="l", ylab="Emissions"))
 
+
+
+
 ###
-### Using ggplot 
+### Using ggplot (project called for base plot)
 ###
 library(ggplot2)
 
