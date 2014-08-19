@@ -37,7 +37,7 @@ SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
 # Subset the data for Baltimore
 baltimore <- NEI[NEI$fips == "24510",]
 
-# Merge the baltimore and SCC data sets to facilitate subsetting
+# Merge the baltimore and SCC data sets to add the SCC categories to facilitate subsetting and plotting
 baltimmoreFull <- join(baltimore, SCC, by="SCC")
 
 # Subset the motor vehicle emission sources (EI.Sector is one of the "Mobile - On-Road" sectors)
