@@ -5,20 +5,24 @@
 ## (http://www.epa.gov/ttn/chief/net/2008neiv3/2008_neiv3_tsd_draft.pdf), the EPA
 ## defines two categories of mobile emission sources: on-raod and non-road. The non-road sources
 ## include "lawn and garden equipment, construction equipment, engines used in recreational activities, 
-## portable industrial, commercial, and agricultural engines."(p. 107) The on-road mobile sources consist of 
-## four sectors, which "include emissions from motorized vehicles that are normally operated on 
+## portable industrial, commercial, and agricultural engines."(p. 107) The on-road mobile sources consist
+## of four sectors, which "include emissions from motorized vehicles that are normally operated on 
 ## public roadways. This includes passenger cars, motorcycles, minivans, sport-utility vehicles, 
 ## light- duty trucks, heavy-duty trucks, and buses. The sectors include emissions from parking 
 ## areas as well as emissions while the vehicles are moving."(p. 113)
 ## Based on these definitions, we will consider motor vehicles to be mobile on-road emission sources.
 ##
 ## This script reads in the the National Emissions Inventory (NEI) data for 1999, 2002, 2005, and 2008.
-## It subsets the Balitmore City data, and then subsets the mobile on-road emission sources. It then
-## uses ggplot to plot a time series of motir vehicle emissions for Baltimore City, 1999 - 2008.
+## It subsets the Baltimore City data and then subsets the mobile on-road emission sources. It then
+## uses ggplot to plot a time series of emissions of motor vehicle by source sector for 
+## Baltimore City, 1999 - 2008.
 ##
-## From the graph we can see that motor vehicles emissions inBaltimore City declined from 1999 to 2008.
+## From the graph we can see that motor vehicles emissions from all sectors in Baltimore City declined 
+## from 1999 to 2008, but at different rates, with some sectors increasing slightly between 2002
+## and 2005.
 
 library(ggplot2)
+library(plyr)
 
 # Set working diectory
 setwd("~/Documents/MOOCs/Data Science Specialization/Course4_Exploratory-Data-Analysis/Projects/ExData_Plotting2")
@@ -31,16 +35,16 @@ SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
 # Subset the data for Baltimore
 baltimore <- NEI[NEI$fips == "24510",]
 
-# Create the index vector to subset motor vehicles (on-road mobile sector)
-# SCC$EI.Sector groups the sources into sectors and we want the "Mobile - On-Road" sectors
-onroadMobileSCC <- SCC$SCC[grepl("Mobile - On-Road", SCC$EI.Sector)]
+# Merge the baltimore and SCC data sets to facilitate subsetting
+baltimmoreSCC <- join(baltimore, SCC, by="SCC")
 
-# Subset the motor vehicle emissions from the Baltimore data set 
-baltimoreOnroadEmissions <- baltimore[baltimore$SCC %in% onroadMobileSCC, ]
+# Subset the motor vehicle emission sources (EI.Sector is one of the "Mobile - On-Road" sectors)
+baltimoreOnroadEmissions <- baltimoreSCC[grepl("Mobile - On-Road", baltimoreSCC$EI.Sector), ]
 
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
-b <- ggplot(baltimoreOnroadEmissions, aes(year, Emissions))
-# Use stat_summary() to plot the summary of the y values (i.e., the on-road mobile emissions)
+# Use color to separate the four motor vehicle sectors
+b <- ggplot(baltimoreOnroadEmissions, aes(year, Emissions, colour=EI.Sector))
+# Use stat_summary() to plot the summary of the y values (i.e., the emissions)
 b <- b + stat_summary(fun.y = "sum", geom = "line")
 # Add labels
 b <- b + labs(title="Baltimore Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
