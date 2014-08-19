@@ -16,11 +16,9 @@
 ## It subsets the Balitmore City data, and then subsets the mobile on-road emission sources. It then
 ## uses ggplot to plot a time series of motir vehicle emissions for Baltimore City, 1999 - 2008.
 ##
-## From the graph we can see that motor vehicles emissions declined slightly from 1999 to 2008, 
-## although there was an increase from 1999 to 2005.
+## From the graph we can see that motor vehicles emissions inBaltimore City declined from 1999 to 2008.
 
 library(ggplot2)
-library(plyr)
 
 # Set working diectory
 setwd("~/Documents/MOOCs/Data Science Specialization/Course4_Exploratory-Data-Analysis/Projects/ExData_Plotting2")
@@ -34,11 +32,11 @@ SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
 baltimore <- NEI[NEI$fips == "24510",]
 
 # Create the index vector to subset motor vehicles (on-road mobile sector)
-onroadMobileSector <- grepl("On-Road", levels(SCC$EI.Sector)) # SCC$EI.Sector groups the sources into sectors
-onroadMobileSCC <- SCC$SCC[onroadMobileSector] # Get the SCC codes for the on-road mobile sector
+# SCC$EI.Sector groups the sources into sectors and we want the "Mobile - On-Road" sectors
+onroadMobileSCC <- SCC$SCC[grepl("Mobile - On-Road", SCC$EI.Sector)]
 
 # Subset the motor vehicle emissions from the Baltimore data set 
-baltimoreOnroadEmissions <- baltimore[baltimore$SCC %in% onroadMobileSCC ,]
+baltimoreOnroadEmissions <- baltimore[baltimore$SCC %in% onroadMobileSCC, ]
 
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
 b <- ggplot(baltimoreOnroadEmissions, aes(year, Emissions))
