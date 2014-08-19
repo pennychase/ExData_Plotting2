@@ -9,13 +9,13 @@ NEI <- readRDS("./exdata-data-NEI_data/summarySCC_PM25.rds")
 SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
 
 # Create index vector to subset coal combustion-related sources
-coalSector <- grepl("Coal", levels(SCC$EI.Sector)) # SCC$EI.Sector groups the sources into sectors
-coalSCC <- SCC$SCC[coalSector] # Get the SCC codes for the coal sector
+# SCC$EI.Sector groups the sources into sectors and we want the "Coal" sectors
+coalSCC <- SCC$SCC[grepl("Coal", SCC$EI.Sector)] 
 
 # Subset the NEI data set 
 coalEmissions <- NEI[NEI$SCC %in% coalSCC,]
 
-# Plot coal emission
+# Plot coal emissions
 # Create the mapping to aesthetics (emissions by year)
 coal <- ggplot(coalEmissions, aes(year, Emissions))
 # Use stat_summary() to plot the summary of the y values (i.e., the emissions)
