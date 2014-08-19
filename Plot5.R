@@ -38,10 +38,10 @@ SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
 baltimore <- NEI[NEI$fips == "24510",]
 
 # Merge the baltimore and SCC data sets to facilitate subsetting
-baltimmoreSCC <- join(baltimore, SCC, by="SCC")
+baltimmoreFull <- join(baltimore, SCC, by="SCC")
 
 # Subset the motor vehicle emission sources (EI.Sector is one of the "Mobile - On-Road" sectors)
-baltimoreOnroadEmissions <- baltimoreSCC[grepl("Mobile - On-Road", baltimoreSCC$EI.Sector), ]
+baltimoreOnroadEmissions <- baltimoreFull[grepl("Mobile - On-Road", baltimoreFull$EI.Sector), ]
 
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
 # Use color to separate the four motor vehicle sectors
