@@ -40,6 +40,8 @@ coalEmissions <- NEI[NEI$SCC %in% coalSCC,]
 
 # Merge coalEmissions with SCC to add the SCC categories to facilitate plotting
 coalEmissionsFull <- join(coalEmissions, SCC, by="SCC")
+# Change the name of sector "Fuel Comb - Residential - Other" to "Fuel Comb - Residential - Coal"
+levels(coalEmissionsFull$EI.Sector)[levels(coalEmissionsFull$EI.Sector)=="Fuel Comb - Residential - Other"] <- "Fuel Comb - Residential - Coal"
 
 # Plot coal emissions
 # Create the mapping to aesthetics (emissions by year separated by EI Sector)
