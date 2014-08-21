@@ -48,7 +48,7 @@ dev.off()                                     # Close graphics device
 # This is good to understand the relative changes, but harder to see what happens for an
 # individual emission type
 b <- ggplot(baltimore, aes(year, Emissions, colour=type))
-b + stat_summary(fun.y = "sum", geom = "line")
+b + stat_summary(fun.y = sum, geom = "line")
 
 ###
 ### Answer

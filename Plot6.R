@@ -4,7 +4,7 @@
 ## motor vehicle emissions?
 ##
 ## First we need to identify motor vehicle sources. The 2008 National Emissions Inventory, 
-## version 3 Technical Support Document (http://www.epa.gov/ttn/chief/net/2008neiv3/2008_neiv3_tsd_draft.pdf), the EPA
+## version 3 Technical Support Document (http://www.epa.gov/ttn/chief/net/2008neiv3/2008_neiv3_tsd_draft.pdf)
 ## describes the sectors the EPA uses to summarize emissions sources. The on-road mobile sources consist
 ## of four sectors which "include emissions from motorized vehicles that are normally operated on 
 ## public roadways." (p. 113) So we will use the four on-road mobile sources to identify motor vehicles.
@@ -52,18 +52,22 @@ baltAndLAOnroadEmissions <- baltAndLAFull[grepl("Mobile - On-Road", baltAndLAFul
 # Create a matrix of plots: region by sector
 #
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
-b <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions))
+b.la <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions))
 # Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
-b <- b + stat_summary(fun.y = "sum", geom = "line")
+# Take log10 of the sums because the LA emissions are so much larger than the Baltimore emissions
+# (so plotting the sums will compress the Baltimore values since ggplot will fit both on
+# the same scale).
+b.la <- b.la + stat_summary(fun.y = function(x) log10(sum(x)), geom = "line")
 # Facet by region x sector
-b <- b + facet_grid(region ~ EI.Sector)
+b.la <- b.la + facet_grid(EI.Sector ~ region)
 # Add labels
-b <- b + labs(title="Baltimore City and Los Angeles County Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
+b.la <- b.la + labs(title="Baltimore City and Los Angeles County Motor Vehicle Emissions, 1999-2008", 
+                    x="Year", y=expression(paste(log[10]," Emissions (tons)")))
 
 # Draw the plot
-png(file="Plot6.png", height=480, width=960)    # Open graphics device and adjust width
-b               # Print plot
-dev.off()       # Close graphics device
+png(file="Plot6.png", height=960, width=540)    # Open graphics device and adjust width and height
+b.la               # Print plot
+dev.off()          # Close graphics device
 
 
 ###
@@ -76,7 +80,7 @@ dev.off()       # Close graphics device
 # Use color to separate the four motor vehicle sectors
 b <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions, colour=EI.Sector))
 # Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
-b <- b + stat_summary(fun.y = "sum", geom = "line")
+b <- b + stat_summary(fun.y = sum, geom = "line")
 # Facet by region
 b <- b + facet_grid(. ~ region)
 # Add labels
@@ -91,7 +95,7 @@ b
 # Use color to separate the regions
 b <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions, colour=region))
 # Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
-b <- b + stat_summary(fun.y = "sum", geom = "line")
+b <- b + stat_summary(fun.y = sum, geom = "line")
 # Facet by sector
 b <- b + facet_grid(. ~ EI.Sector)
 # Add labels

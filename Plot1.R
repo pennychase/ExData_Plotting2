@@ -38,7 +38,7 @@ library(ggplot2)
 n <- ggplot(NEI, aes(year, Emissions))
 # Use stat_summary() to plot the summary of the y values (i.e., the Emissions)
 # Plot the points as well as the lines to make clear which years we have data
-n + stat_summary(fun.y = "sum", geom = "line") + stat_summary(fun.y = "sum", geom = "point")
+n + stat_summary(fun.y = sum, geom = "line") + stat_summary(fun.y = sum, geom = "point")
 
 ###
 ### Answer

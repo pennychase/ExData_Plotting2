@@ -2,7 +2,7 @@
 ## How have emissions from motor vehicle sources changed from 1999–2008 in Baltimore City?
 ##
 ## First we need to identify motor vehicle sources. The 2008 National Emissions Inventory, 
-## version 3 Technical Support Document (http://www.epa.gov/ttn/chief/net/2008neiv3/2008_neiv3_tsd_draft.pdf), the EPA
+## version 3 Technical Support Document (http://www.epa.gov/ttn/chief/net/2008neiv3/2008_neiv3_tsd_draft.pdf)
 ## describes the sectors the EPA uses to summarize emissions sources. The on-road mobile sources consist
 ## of four sectors which "include emissions from motorized vehicles that are normally operated on 
 ## public roadways." (p. 113) So we will use the four on-road mobile sources to identify motor vehicles.
@@ -43,7 +43,7 @@ baltimoreOnroadEmissions <- baltimoreFull[grepl("Mobile - On-Road", baltimoreFul
 # Use color to separate the four motor vehicle sectors
 b <- ggplot(baltimoreOnroadEmissions, aes(year, Emissions, colour=EI.Sector))
 # Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
-b <- b + stat_summary(fun.y = "sum", geom = "line")
+b <- b + stat_summary(fun.y = sum, geom = "line")
 # Add labels
 b <- b + labs(title="Baltimore City Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
 

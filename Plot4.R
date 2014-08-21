@@ -47,7 +47,7 @@ levels(coalEmissionsFull$EI.Sector)[levels(coalEmissionsFull$EI.Sector)=="Fuel C
 # Create the mapping to aesthetics (emissions by year separated by EI Sector)
 coal <- ggplot(coalEmissionsFull, aes(year, Emissions, colour=EI.Sector))
 # Use stat_summary() to plot the summary of the y values (i.e., the emissions)
-coal <- coal + stat_summary(fun.y = "sum", geom = "line") 
+coal <- coal + stat_summary(fun.y = sum, geom = "line") 
 # Add labels
 coal <- coal + labs(title="Emissions from Coal Sources, 1999-2008", x="Year", y="Emissions (tons)")
 
