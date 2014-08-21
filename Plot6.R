@@ -49,31 +49,35 @@ baltAndLAFull <- join(baltAndLA, SCC, by="SCC")
 # Subset the motor vehicle emission sources (EI.Sector is one of the "Mobile - On-Road" sectors)
 baltAndLAOnroadEmissions <- baltAndLAFull[grepl("Mobile - On-Road", baltAndLAFull$EI.Sector), ]
 
-baltAndLAData <- ddply(baltAndLAOnroadEmissions, .(year, region, EI.Sector), summarize, sum=sum(Emissions))
-baltAndLAData$Emissions <- log10(baltAndLAData$sum)
-baltAndLAData$sum <- NULL
+# For creating a horizontal line at the value of the emissions for 1999
+# Create the data frame of the 1999 values for each region and sector
+hline.data <- ddply(baltAndLAOnroadEmissions[baltAndLAOnroadEmissions$year==1999,], 
+                    .(region, EI.Sector), summarize, Emissions=log10(sum(Emissions)))
 
-hline.data <- baltAndLAData[baltAndLAData$year==1999,]
-
-b.la <- ggplot(baltAndLAData, aes(year, Emissions))
-b.la <- b.la + geom_line()
-b.la <- b.la + facet_grid(EI.Sector ~ region)
-b.la <- b.la + geom_hline(aes(yintercept=Emissiona), colour="#9999CC", hline.data)
-
-b.la <- b.la + labs(title="Baltimore City and Los Angeles County Motor Vehicle Emissions, 1999-2008", 
-                    x="Year", y=expression(paste(log[10], " ", PM[2.5], " Emissions (tons)")))                              
+# logsum is the function that will be used in stat_summary
+# stat_summary expects a data frame with three variables: y, ymin, ymax
+logsum <- function (x) {
+  log10Sum <- log10(sum(x))
+  triplet <- data.frame(y=log10Sum, ymin=log10Sum, ymax=log10Sum)
+}
 
 # Create a matrix of plots: region by sector
 #
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
 b.la <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions))
+
 # Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
 # Do a log10 transform of the sums because the LA emissions are so much larger than the 
 # Baltimore emissions (without the transform the Baltimore values are compressed)
-b.la <- b.la + stat_summary(fun.y = function(x) log10(sum(x)), geom = "line")
+b.la <- b.la + stat_summary(fun.data = logsum, geom = "line")
+
 # Facet by EI.Sector x region so each sector source lines up side by side (to better compare
 # the magnitudes of the emissions in each region)
 b.la <- b.la + facet_grid(EI.Sector ~ region)
+
+# Add the horizontal line showing the emissions for 1999
+b.la <- b.la + geom_hline(aes(yintercept=Emissions), colour="#9999CC", hline.data)
+
 # Add labels
 b.la <- b.la + labs(title="Baltimore City and Los Angeles County Motor Vehicle Emissions, 1999-2008", 
                     x="Year", y=expression(paste(log[10], " ", PM[2.5], " Emissions (tons)")))
