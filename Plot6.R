@@ -49,6 +49,20 @@ baltAndLAFull <- join(baltAndLA, SCC, by="SCC")
 # Subset the motor vehicle emission sources (EI.Sector is one of the "Mobile - On-Road" sectors)
 baltAndLAOnroadEmissions <- baltAndLAFull[grepl("Mobile - On-Road", baltAndLAFull$EI.Sector), ]
 
+baltAndLAData <- ddply(baltAndLAOnroadEmissions, .(year, region, EI.Sector), summarize, sum=sum(Emissions))
+baltAndLAData$Emissions <- log10(baltAndLAData$sum)
+baltAndLAData$sum <- NULL
+
+hline.data <- baltAndLAData[baltAndLAData$year==1999,]
+
+b.la <- ggplot(baltAndLAData, aes(year, Emissions))
+b.la <- b.la + geom_line()
+b.la <- b.la + facet_grid(EI.Sector ~ region)
+b.la <- b.la + geom_hline(aes(yintercept=Emissiona), colour="#9999CC", hline.data)
+
+b.la <- b.la + labs(title="Baltimore City and Los Angeles County Motor Vehicle Emissions, 1999-2008", 
+                    x="Year", y=expression(paste(log[10], " ", PM[2.5], " Emissions (tons)")))                              
+
 # Create a matrix of plots: region by sector
 #
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
@@ -78,7 +92,7 @@ data2008 <- ddply(baltAndLAOnroadEmissions[baltAndLAOnroadEmissions$year==2008,]
                   .(region, EI.Sector), summarize, sum=sum(Emissions))
 data1999 <- ddply(baltAndLAOnroadEmissions[baltAndLAOnroadEmissions$year==1999,], 
                   .(region, EI.Sector), summarize, sum=sum(Emissions))
-# Comput the percent change
+# Compute the percent change
 data2008$change <- (data2008$sum - data1999$sum)/data1999$sum
 
 ### Alternative plots
