@@ -1,3 +1,16 @@
+## R Code to construct a plot to answer Question 3: 
+## Of the four types of sources indicated by the type (point, nonpoint, onroad, nonroad) variable, 
+## which of these four sources have seen decreases in emissions from 1999–2008 for Baltimore City? 
+##
+## This script reads in the the National Emissions Inventory (NEI) data for 1999, 2002, 2005, and 2008.
+## It subsets the data for Baltimore City and uses ggplot to (compute and) plot the total emissions by 
+## type between 1999 and 2008. It facets the data by source and annotates the data with horizontal
+## lines showing the 1999 values for each sector, to make the increase/decrease clearer.
+##
+## From the plot we can see that between 1999 and 2008, the non-road, non-point, and on-road
+## emissions decreased, while point emissions increased slightly (point emissions increased sharply
+## betweem 1999 and 2005, and then decreased to just above 1999 levels).
+
 library(ggplot2)
 library(plyr)
 
@@ -29,6 +42,9 @@ b <- b + labs(title="Baltimore Emissions by Type, 1999-2008", x="Year", y="Emiss
 b
 
 
+###
+### Alternatives
+###
 
 # Use color to separate groups
 # This is good to understand the relative changes, but harder to see what happens for an

@@ -11,19 +11,20 @@
 ##
 ## To answer the question about trends of motor vehicle emissions, we will look at the trends of
 ## the four on-road sectors: diesel heavy-duty vehicles, diesel light-duty vehicles, gasoline heavy-duty
-## vehicles, and gasoline light-duty vehicles. We could simply look at the total emissions across the four
-## sectors, but we already have done that in Plot 3 (the on-road type facet). The four sectors is the
-## way EPA summarizes the data and it strikes a balance: the other SCC hierarchical groupings either offer
-## fewer bins (SCC.Level.Two has 2), more bins (SCC.Level.Three has 13), or no clear relevant categories.
+## vehicles, and gasoline light-duty vehicles. The four sectors is the way EPA summarizes the data 
+## and it strikes a balance: the other SCC hierarchical groupings either offer fewer bins 
+## (SCC.Level.Two has 2), more bins (SCC.Level.Three has 13), or no clear relevant categories.
 ##
 ## This script reads in the the National Emissions Inventory (NEI) data for 1999, 2002, 2005, and 2008.
-## It subsets the Baltimore City data and then subsets the mobile on-road emission sources. It then
-## uses ggplot to plot a time series of emissions from motor vehicle sources by sector for 
-## Baltimore City, 1999 - 2008.
+## It subsets the Baltimore City data and Los Angeles County data and then subsets the mobile on-road 
+## emission sources. It then uses ggplot to plot a matrix of time series of emissions from motor vehicle
+# sources by region (Baltimore / Los Angeles) x sector for 1999 - 2008
 ##
-## From the graph we can see that motor vehicles emissions from all sectors in Baltimore City declined 
-## from 1999 to 2008, but at different rates, with some sectors increasing slightly between 2002
-## and 2005.
+## From the plots we can see that on-road diesel light duty vehicle emissions and on-road gasoline heavy 
+## duty vehicle emissions are low in both regions with little change over the tie period. On-road diesel
+## vehicle emissions declined in Baltimore and increased in Los Angeles (though dropping from a high 
+## in 2005). On-road Gasoline light duty behicle emissions declined somewhat in Baltimore, and experienced 
+## a greater decline in Los Angeles, although it declined, increased, and then declined.
 
 library(ggplot2)
 library(plyr)

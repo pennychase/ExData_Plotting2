@@ -55,11 +55,11 @@ coal <- coal + labs(title="Emissions from Coal Sources, 1999-2008", x="Year", y=
 coal
 
 
-##
-## Some explorations
-##
+###
+### Some explorations
+###
 
-# the EI.Sector for "Fuel Comb - Residential - Other" includes coal. To find out how to identify
+# The EI.Sector for "Fuel Comb - Residential - Other" includes coal. To find out how to identify
 # the coal sources first make a subset of the sector
 otherSCC <- SCC$SCC[grepl("Fuel Comb - Residential - Other", SCC$EI.Sector)]
 other <- NEI[NEI$SCC %in% otherSCC,]
@@ -69,7 +69,7 @@ otherFull <- join(other, SCC, by="SCC")
 x <- table(otherFull$Short.Name) > 0   # Create logical vector of the Short Names that are used
 which(x == TRUE)  # Show the Short Names 
 
-# There are three types, two of which have Coal:
+# There are three types, two of which are Coal sources:
 #
 # Stationary Fuel Comb /Residential /Anthracite Coal /Total: All Combustor Types 
 # 9568 
