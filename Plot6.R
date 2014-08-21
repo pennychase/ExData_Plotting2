@@ -18,7 +18,7 @@
 ## This script reads in the the National Emissions Inventory (NEI) data for 1999, 2002, 2005, and 2008.
 ## It subsets the Baltimore City data and Los Angeles County data and then subsets the mobile on-road 
 ## emission sources. It then uses ggplot to plot a matrix of time series of emissions from motor vehicle
-# sources by region (Baltimore / Los Angeles) x sector for 1999 - 2008
+## sources by region (Baltimore / Los Angeles) x sector for 1999 - 2008
 
 library(ggplot2)
 library(plyr)
@@ -35,7 +35,7 @@ SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
 baltimore <- NEI[NEI$fips == "24510",]
 baltimore$region <- "Baltimore"
 
-# Subset the data for Loas Angeles
+# Subset the data for Los Angeles
 losangeles <- NEI[NEI$fips == "06037", ]
 losangeles$region <- "Los Angeles"
 
@@ -54,15 +54,15 @@ baltAndLAOnroadEmissions <- baltAndLAFull[grepl("Mobile - On-Road", baltAndLAFul
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
 b.la <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions))
 # Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
-# Take log10 of the sums because the LA emissions are so much larger than the Baltimore emissions
-# (so plotting the sums will compress the Baltimore values since ggplot will fit both on
-# the same scale).
+# Do a log10 transform of the sums because the LA emissions are so much larger than the 
+# Baltimore emissions (without the transform the Baltimore values are compressed)
 b.la <- b.la + stat_summary(fun.y = function(x) log10(sum(x)), geom = "line")
-# Facet by region x sector
+# Facet by EI.Sector x region so each sector source lines up side by side (to better compare
+# the magnitudes of the emissions in each region)
 b.la <- b.la + facet_grid(EI.Sector ~ region)
 # Add labels
 b.la <- b.la + labs(title="Baltimore City and Los Angeles County Motor Vehicle Emissions, 1999-2008", 
-                    x="Year", y=expression(paste(log[10]," Emissions (tons)")))
+                    x="Year", y=expression(paste(log[10], " ", PM[2.5], " Emissions (tons)")))
 
 # Draw the plot
 png(file="Plot6.png", height=960, width=540)    # Open graphics device and adjust width and height
@@ -71,6 +71,16 @@ dev.off()          # Close graphics device
 
 
 ###
+### Some exploration (sanity checking) to make sure log10 transform makes sense
+###
+# Create a data frame showing the total emissions by region x sector for each year
+data2008 <- ddply(baltAndLAOnroadEmissions[baltAndLAOnroadEmissions$year==2008,], 
+                  .(region, EI.Sector), summarize, sum=sum(Emissions))
+data1999 <- ddply(baltAndLAOnroadEmissions[baltAndLAOnroadEmissions$year==1999,], 
+                  .(region, EI.Sector), summarize, sum=sum(Emissions))
+# Comput the percent change
+data2008$change <- (data2008$sum - data1999$sum)/data1999$sum
+
 ### Alternative plots
 ###
 
@@ -78,33 +88,58 @@ dev.off()          # Close graphics device
 #
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
 # Use color to separate the four motor vehicle sectors
-b <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions, colour=EI.Sector))
+b.la <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions, colour=EI.Sector))
 # Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
-b <- b + stat_summary(fun.y = sum, geom = "line")
+b.la <- b.la + stat_summary(fun.y = sum, geom = "line")
 # Facet by region
-b <- b + facet_grid(. ~ region)
+b.la <- b.la + facet_grid(. ~ region)
 # Add labels
-b <- b + labs(title="Baltimore and Los Angeles Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
+b.la <- b.la + labs(title="Baltimore and Los Angeles Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
 
 # Draw the plot
-b
+b.la
 
 # Create a plot separated by sector with each plot showing the trends of each region
 #
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
 # Use color to separate the regions
-b <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions, colour=region))
+b.la <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions, colour=region))
 # Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
-b <- b + stat_summary(fun.y = sum, geom = "line")
+b.la <- b.la + stat_summary(fun.y = sum, geom = "line")
 # Facet by sector
-b <- b + facet_grid(. ~ EI.Sector)
+b.la <- b.la + facet_grid(. ~ EI.Sector)
 # Add labels
-b <- b + labs(title="Baltimore and Los Angeles Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
+b.la <- b.la + labs(title="Baltimore and Los Angeles Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
 
 # Draw the plot
-b
+b.la
 
+###
+### Final Plot (before tweaks)
+###
 
+# This was the final alternative, a matrix of plot, region x sector.
+# The first problem was that the Emissions for LA were so much larger than for
+# Baltimore, that when ggplot drew them on the same, changes in Baltimore were almost flat.
+# So we transform the emissions with log10
+# The second problem was it was hard to see the relative magintudes of the emissions in
+# the region by sector plot matrix, so we switch the matrix to be sector by region
+# (so the emissions for each sector are side by side)
+
+# Create a matrix of plots: region by sector
+#
+# Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
+b.la <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions))
+# Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
+# Take log10 of the sums because the LA emissions are so much larger than the Baltimore emissions
+# (so plotting the sums will compress the Baltimore values since ggplot will fit both on
+# the same scale).
+b.la <- b.la + stat_summary(fun.y = sum, geom = "line")
+# Facet by region x sector
+b.la <- b.la + facet_grid(region ~ EI.Sector)
+# Add labels
+b.la <- b.la + labs(title="Baltimore City and Los Angeles County Motor Vehicle Emissions, 1999-2008", 
+                    x="Year", y=expression(paste("Emissions (tons)")))
 
 ###
 ### Answer
