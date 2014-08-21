@@ -19,20 +19,14 @@
 ## It subsets the Baltimore City data and Los Angeles County data and then subsets the mobile on-road 
 ## emission sources. It then uses ggplot to plot a matrix of time series of emissions from motor vehicle
 # sources by region (Baltimore / Los Angeles) x sector for 1999 - 2008
-##
-## From the plots we can see that on-road diesel light duty vehicle emissions and on-road gasoline heavy 
-## duty vehicle emissions are low in both regions with little change over the tie period. On-road diesel
-## vehicle emissions declined in Baltimore and increased in Los Angeles (though dropping from a high 
-## in 2005). On-road Gasoline light duty behicle emissions declined somewhat in Baltimore, and experienced 
-## a greater decline in Los Angeles, although it declined, increased, and then declined.
 
 library(ggplot2)
 library(plyr)
 
-# Set working diectory
+# Set working directory
 setwd("~/Documents/MOOCs/Data Science Specialization/Course4_Exploratory-Data-Analysis/Projects/ExData_Plotting2")
 
-# Assume the data has been downloaded to exdata-data-NEI_data
+# Assume the data has been downloaded to ./exdata-data-NEI_data
 # Read in the data and the classification codes from R object files
 NEI <- readRDS("./exdata-data-NEI_data/summarySCC_PM25.rds")
 SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
@@ -55,7 +49,7 @@ baltAndLAFull <- join(baltAndLA, SCC, by="SCC")
 # Subset the motor vehicle emission sources (EI.Sector is one of the "Mobile - On-Road" sectors)
 baltAndLAOnroadEmissions <- baltAndLAFull[grepl("Mobile - On-Road", baltAndLAFull$EI.Sector), ]
 
-# Create a matrix pf plots: region by sector
+# Create a matrix of plots: region by sector
 #
 # Create the ggplot plot -- tell ggplot about the data and the aesthetics mapping
 b <- ggplot(baltAndLAOnroadEmissions, aes(year, Emissions))
@@ -64,10 +58,12 @@ b <- b + stat_summary(fun.y = "sum", geom = "line")
 # Facet by region x sector
 b <- b + facet_grid(region ~ EI.Sector)
 # Add labels
-b <- b + labs(title="Baltimore and Los Angeles Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
+b <- b + labs(title="Baltimore City and Los Angeles County Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
 
 # Draw the plot
-b
+png(file="Plot6.png", height=480, width=960)    # Open graphics device and adjust width
+b               # Print plot
+dev.off()       # Close graphics device
 
 
 ###
@@ -104,3 +100,13 @@ b <- b + labs(title="Baltimore and Los Angeles Motor Vehicle Emissions, 1999-200
 # Draw the plot
 b
 
+
+
+###
+### Answer
+###
+### From the plots we can see that on-road diesel light duty vehicle emissions and on-road gasoline heavy 
+### duty vehicle emissions are low in both regions with little change over the tie period. On-road diesel
+### vehicle emissions declined in Baltimore and increased in Los Angeles (though dropping from a high 
+### in 2005). On-road Gasoline light duty behicle emissions declined somewhat in Baltimore, and experienced 
+### a greater decline in Los Angeles, although it declined, increased, and then declined.

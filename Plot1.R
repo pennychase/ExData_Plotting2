@@ -4,14 +4,11 @@
 ## This script reads in the the National Emissions Inventory (NEI) data for 1999, 2002, 2005, and 2008.
 ## It computes the total emissions by year, and uses the base plotting system to plot a time series
 ## graph of the total emissions by year.
-##
-## From the graph we can see that total emissions declined from over 7,000,000 tons in 1999 to
-## below 3,500,000 tons in 2008.
 
-# Set working diectory
+# Set working directory
 setwd("~/Documents/MOOCs/Data Science Specialization/Course4_Exploratory-Data-Analysis/Projects/ExData_Plotting2")
 
-# Assume the data has been downloaded to exdata-data-NEI_data
+# Assume the data has been downloaded to ./exdata-data-NEI_data
 # Read in the data and the classification codes from R object files
 NEI <- readRDS("./exdata-data-NEI_data/summarySCC_PM25.rds")
 SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
@@ -21,11 +18,15 @@ te <- tapply(NEI$Emissions, NEI$year, sum)
 # Convert result to a data frame
 totalEmissions <- data.frame(Year=as.Date(names(te), "%Y"), Emissions=as.vector(te))
 
+# Open graphics device
+png(file="Plot1.png")
+
 # Plot as a time series: type="l" draws lines
 with(totalEmissions, plot(Year, Emissions, type="l", xlab="Year",
                           ylab="Emissions (tons)", main="Total Emissions from All Sources, 1999-2008"))
 
-
+# Close graphics device
+dev.off()
 
 
 ###
@@ -38,3 +39,9 @@ n <- ggplot(NEI, aes(year, Emissions))
 # Use stat_summary() to plot the summary of the y values (i.e., the Emissions)
 # Plot the points as well as the lines to make clear which years we have data
 n + stat_summary(fun.y = "sum", geom = "line") + stat_summary(fun.y = "sum", geom = "point")
+
+###
+### Answer
+### 
+### From the graph we can see that total emissions declined from over 7,000,000 tons in 1999 to
+### below 3,500,000 tons in 2008.

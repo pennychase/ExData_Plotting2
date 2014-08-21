@@ -18,18 +18,14 @@
 ## It subsets the Baltimore City data and then subsets the mobile on-road emission sources. It then
 ## uses ggplot to plot a time series of emissions from motor vehicle sources by sector for 
 ## Baltimore City, 1999 - 2008.
-##
-## From the graph we can see that motor vehicles emissions from all sectors in Baltimore City declined 
-## from 1999 to 2008, but at different rates, with some sectors increasing slightly between 2002
-## and 2005.
 
 library(ggplot2)
 library(plyr)
 
-# Set working diectory
+# Set working directory
 setwd("~/Documents/MOOCs/Data Science Specialization/Course4_Exploratory-Data-Analysis/Projects/ExData_Plotting2")
 
-# Assume the data has been downloaded to exdata-data-NEI_data
+# Assume the data has been downloaded to ./exdata-data-NEI_data
 # Read in the data and the classification codes from R object files
 NEI <- readRDS("./exdata-data-NEI_data/summarySCC_PM25.rds")
 SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
@@ -49,8 +45,17 @@ b <- ggplot(baltimoreOnroadEmissions, aes(year, Emissions, colour=EI.Sector))
 # Use stat_summary() to plot the sum of the y values (i.e., the total emissions of the sector) 
 b <- b + stat_summary(fun.y = "sum", geom = "line")
 # Add labels
-b <- b + labs(title="Baltimore Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
+b <- b + labs(title="Baltimore City Motor Vehicle Emissions, 1999-2008", x="Year", y="Emissions (tons)")
 
 # Draw the plot
-b
+png(file="Plot5.png", height=480, width=640)   # Open the graphics device and adjust width
+b                       # Print the plot
+dev.off()               # Close the graphics device
 
+
+###
+### Answer
+###
+### From the graph we can see that motor vehicles emissions from all sectors in Baltimore City declined 
+### from 1999 to 2008, but at different rates, with some sectors increasing slightly between 2002
+### and 2005.

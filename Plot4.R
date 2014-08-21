@@ -20,10 +20,10 @@
 library(ggplot2)
 library(plyr)
 
-# Set working diectory
+# Set working directory
 setwd("~/Documents/MOOCs/Data Science Specialization/Course4_Exploratory-Data-Analysis/Projects/ExData_Plotting2")
 
-# Assume the data has been downloaded to exdata-data-NEI_data
+# Assume the data has been downloaded to ./exdata-data-NEI_data
 # Read in the data and the classification codes from R object files
 NEI <- readRDS("./exdata-data-NEI_data/summarySCC_PM25.rds")
 SCC <- readRDS("./exdata-data-NEI_data/Source_Classification_Code.rds")
@@ -52,11 +52,14 @@ coal <- coal + stat_summary(fun.y = "sum", geom = "line")
 coal <- coal + labs(title="Emissions from Coal Sources, 1999-2008", x="Year", y="Emissions (tons)")
 
 # Plot graph
-coal
+png(file="Plot4.png", height=480, width=640)   # Open graphics device and adjust width
+coal                    # Print the plot
+dev.off()               # Close graphics device
+
 
 
 ###
-### Some explorations
+### Finding coal combustion sources
 ###
 
 # The EI.Sector for "Fuel Comb - Residential - Other" includes coal. To find out how to identify
@@ -78,3 +81,10 @@ which(x == TRUE)  # Show the Short Names
 # Stationary Fuel Comb /Residential /Liquified Petroleum Gas /Total: All Combustor Types 
 # 9574 
 
+
+###
+### Answer
+###
+### From the graph we can see that commercial and residential sources declines slightly (almost level)
+### and were low to begin with. Electric generation declines steeply. Industrial boiler increased,
+### leveled, and then decreased, ending up slightly higher in 2008.
